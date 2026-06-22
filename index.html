@@ -301,9 +301,9 @@ html, body {
   </div>
 
   <script type="module">
-import * as THREE from 'three';
+import * as THREE_NS from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-THREE.OrbitControls = OrbitControls;
+const THREE = { ...THREE_NS, OrbitControls };
 // ========================
 // PLANET DATA
 // ========================
