@@ -1,0 +1,782 @@
+/* === GOD'S EYE - Cyberpunk/Hacker Aesthetic === */
+
+:root {
+  --bg-primary: #000408;
+  --color-primary: #00FFB2;
+  --color-accent: #FF4400;
+  --color-text: #0AF0FF;
+  --color-grid: #0A2A2A;
+  --color-dim: #0a4a3a;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  cursor: crosshair;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#scene-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#scene-container canvas {
+  display: block;
+}
+
+#map-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+/* === Scanlines Overlay === */
+#scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: scanline-flicker 0.05s infinite;
+}
+
+@keyframes scanline-flicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 1; }
+  100% { opacity: 0.95; }
+}
+
+/* === CRT Vignette === */
+#vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 4, 8, 0.4) 80%,
+    rgba(0, 4, 8, 0.8) 100%
+  );
+}
+
+/* === Glitch Overlay === */
+#glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0%,
+    rgba(0, 255, 178, 0.03) 1%,
+    transparent 2%
+  );
+  mix-blend-mode: screen;
+}
+
+#glitch-overlay.active {
+  animation: glitch-effect 0.3s steps(4) forwards;
+}
+
+@keyframes glitch-effect {
+  0% {
+    transform: translate(0);
+    opacity: 1;
+    clip-path: inset(0 0 80% 0);
+  }
+  20% {
+    transform: translate(-5px, 2px);
+    clip-path: inset(20% 0 60% 0);
+  }
+  40% {
+    transform: translate(5px, -2px);
+    clip-path: inset(40% 0 40% 0);
+  }
+  60% {
+    transform: translate(-3px, 1px);
+    clip-path: inset(60% 0 20% 0);
+  }
+  80% {
+    transform: translate(2px, -1px);
+    clip-path: inset(10% 0 10% 0);
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0;
+    clip-path: inset(0);
+  }
+}
+
+/* === Planet Info Panel === */
+#planet-info {
+  position: fixed;
+  top: 50%;
+  right: 40px;
+  transform: translateY(-50%);
+  width: 320px;
+  background: rgba(0, 4, 8, 0.92);
+  border: 1px solid var(--color-primary);
+  border-radius: 2px;
+  padding: 0;
+  z-index: 1000;
+  box-shadow:
+    0 0 20px rgba(0, 255, 178, 0.15),
+    inset 0 0 30px rgba(0, 255, 178, 0.02);
+  backdrop-filter: blur(4px);
+}
+
+#planet-info.hidden {
+  display: none;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-grid);
+  background: rgba(0, 255, 178, 0.05);
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--color-primary);
+  text-transform: uppercase;
+}
+
+#panel-close {
+  background: none;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#panel-close:hover {
+  background: var(--color-accent);
+  color: var(--bg-primary);
+}
+
+.panel-body {
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--color-text);
+  min-height: 200px;
+}
+
+.panel-body .data-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-grid);
+}
+
+.panel-body .data-label {
+  color: var(--color-dim);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.panel-body .data-value {
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+/* === Planet Label (hover) === */
+#planet-label {
+  position: fixed;
+  pointer-events: none;
+  z-index: 900;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid rgba(0, 255, 178, 0.4);
+  background: rgba(0, 4, 8, 0.8);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--color-primary);
+}
+
+#planet-label.hidden {
+  display: none;
+}
+
+/* === Reset View Button === */
+#reset-view {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+  background: rgba(0, 4, 8, 0.85);
+  border: 1px solid var(--color-primary);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+#reset-view:hover {
+  background: rgba(0, 255, 178, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 178, 0.3);
+}
+
+/* === Pause Indicator === */
+#pause-indicator {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 5px;
+  color: var(--color-accent);
+  text-shadow: 0 0 10px var(--color-accent);
+  animation: blink 1s steps(1) infinite;
+}
+
+#pause-indicator.hidden {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* === Back Button === */
+#back-button {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  z-index: 1100;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+  background: rgba(0, 4, 8, 0.85);
+  border: 1px solid var(--color-primary);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#back-button:hover {
+  background: rgba(0, 255, 178, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 178, 0.3);
+}
+
+#back-button.hidden {
+  display: none;
+}
+
+/* === Utility === */
+.hidden {
+  display: none !important;
+}
+
+/* === Typewriter Cursor === */
+.typewriter-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--color-primary);
+  animation: cursor-blink 0.7s steps(1) infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* === Selection === */
+::selection {
+  background: var(--color-primary);
+  color: var(--bg-primary);
+}
+
+/* === Earth Mode - Map Styles === */
+#map-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+#map-container .leaflet-tile-pane {
+  filter: brightness(1.1) saturate(1.3) hue-rotate(140deg);
+}
+
+#map-container .leaflet-control-attribution {
+  display: none;
+}
+
+/* === Earth Mode HUD === */
+#earth-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1050;
+}
+
+/* Corner Brackets */
+.hud-bracket {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-color: var(--color-primary);
+  border-style: solid;
+  opacity: 0.8;
+}
+
+.hud-bracket-tl {
+  top: 20px;
+  left: 20px;
+  border-width: 2px 0 0 2px;
+  animation: bracket-pulse 2s ease-in-out infinite;
+}
+
+.hud-bracket-tr {
+  top: 20px;
+  right: 20px;
+  border-width: 2px 2px 0 0;
+  animation: bracket-pulse 2s ease-in-out infinite 0.5s;
+}
+
+.hud-bracket-bl {
+  bottom: 20px;
+  left: 20px;
+  border-width: 0 0 2px 2px;
+  animation: bracket-pulse 2s ease-in-out infinite 1s;
+}
+
+.hud-bracket-br {
+  bottom: 20px;
+  right: 20px;
+  border-width: 0 2px 2px 0;
+  animation: bracket-pulse 2s ease-in-out infinite 1.5s;
+}
+
+@keyframes bracket-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* HUD Top Bar */
+.hud-top-bar {
+  position: absolute;
+  top: 60px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-primary);
+  text-shadow: 0 0 6px var(--color-primary);
+  letter-spacing: 1px;
+}
+
+/* HUD Bottom Bar */
+.hud-bottom-bar {
+  position: absolute;
+  bottom: 40px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-primary);
+  text-shadow: 0 0 6px var(--color-primary);
+  letter-spacing: 1px;
+}
+
+/* Signal Bars */
+.hud-signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+
+.signal-bar {
+  width: 3px;
+  background: var(--color-primary);
+  animation: signal-noise 0.3s steps(2) infinite;
+}
+
+.signal-bar:nth-child(1) { height: 4px; animation-delay: 0s; }
+.signal-bar:nth-child(2) { height: 7px; animation-delay: 0.1s; }
+.signal-bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+.signal-bar:nth-child(4) { height: 13px; animation-delay: 0.15s; }
+.signal-bar:nth-child(5) { height: 16px; animation-delay: 0.05s; }
+
+@keyframes signal-noise {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Radar */
+.hud-radar {
+  position: absolute;
+  bottom: 70px;
+  left: 30px;
+  width: 80px;
+  height: 80px;
+  border: 1px solid rgba(0, 255, 178, 0.3);
+  border-radius: 50%;
+}
+
+#hud-radar-canvas {
+  width: 80px;
+  height: 80px;
+}
+
+/* Matrix Rain */
+.matrix-rain {
+  position: absolute;
+  top: 80px;
+  width: 12px;
+  height: calc(100% - 160px);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--color-primary);
+  opacity: 0.3;
+  overflow: hidden;
+  white-space: pre;
+  letter-spacing: 0;
+}
+
+.matrix-rain-left {
+  left: 6px;
+}
+
+.matrix-rain-right {
+  right: 6px;
+}
+
+/* === Earth Mode Toolbar === */
+#earth-toolbar {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toolbar-btn {
+  width: 52px;
+  height: 52px;
+  background: rgba(0, 4, 8, 0.85);
+  border: 1px solid rgba(0, 255, 178, 0.3);
+  color: var(--color-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.toolbar-btn .toolbar-icon {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.toolbar-btn .toolbar-label {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+.toolbar-btn.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(0, 255, 178, 0.2);
+  text-shadow: 0 0 6px var(--color-primary);
+}
+
+.toolbar-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.toolbar-btn.activating::after {
+  content: 'ACTIVATING...';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 178, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6px;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+  animation: activate-flash 0.6s steps(3) forwards;
+}
+
+@keyframes activate-flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+.toolbar-btn:hover {
+  border-color: var(--color-text);
+  background: rgba(0, 255, 178, 0.05);
+}
+
+/* === Map Marker Styles === */
+.iss-marker {
+  background: none;
+  border: none;
+}
+
+.iss-dot {
+  width: 12px;
+  height: 12px;
+  background: #00FFB2;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 10px #00FFB2, 0 0 20px #00FFB2;
+}
+
+.iss-pulse {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #00FFB2;
+  border-radius: 50%;
+  animation: iss-pulse-anim 1.5s ease-out infinite;
+}
+
+@keyframes iss-pulse-anim {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.aircraft-marker {
+  background: none;
+  border: none;
+}
+
+.plane-icon {
+  font-size: 10px;
+  color: #0AF0FF;
+  text-shadow: 0 0 4px #0AF0FF;
+  line-height: 1;
+}
+
+.ship-marker {
+  background: none;
+  border: none;
+}
+
+.ship-icon {
+  font-size: 8px;
+  color: #00FFB2;
+  opacity: 0.7;
+}
+
+.earthquake-marker {
+  animation: quake-pulse 2s ease-in-out infinite;
+}
+
+@keyframes quake-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.fire-marker {
+  animation: fire-flicker 1s ease-in-out infinite;
+}
+
+@keyframes fire-flicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.lightning-flash {
+  animation: lightning-flash-anim 0.3s ease-out forwards;
+}
+
+@keyframes lightning-flash-anim {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* === Leaflet Popup Styles === */
+.cyber-leaflet-popup .leaflet-popup-content-wrapper {
+  background: rgba(0, 4, 8, 0.95);
+  border: 1px solid var(--color-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 15px rgba(0, 255, 178, 0.2);
+}
+
+.cyber-leaflet-popup .leaflet-popup-content {
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin: 10px 14px;
+}
+
+.cyber-leaflet-popup .leaflet-popup-tip {
+  background: rgba(0, 4, 8, 0.95);
+  border: 1px solid var(--color-primary);
+}
+
+.cyber-popup {
+  line-height: 1.6;
+}
+
+.cyber-popup strong {
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* Country Popup */
+.country-popup {
+  min-width: 200px;
+}
+
+.country-header {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.country-official {
+  font-size: 10px;
+  color: var(--color-dim);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--color-grid);
+  padding-bottom: 6px;
+}
+
+.country-data {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.country-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(10, 42, 42, 0.5);
+}
+
+.country-row span:first-child {
+  color: var(--color-dim);
+  letter-spacing: 1px;
+}
+
+.country-row span:last-child {
+  color: var(--color-text);
+}
+
+/* General Leaflet popup override */
+.leaflet-popup-content-wrapper {
+  background: rgba(0, 4, 8, 0.95) !important;
+  border: 1px solid var(--color-primary) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 15px rgba(0, 255, 178, 0.2) !important;
+  color: var(--color-text) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(0, 4, 8, 0.95) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--color-accent) !important;
+}

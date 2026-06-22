@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="God's Eye - Interactive 3D Solar System and Real-Time Earth Monitoring" />
+  <title>GOD'S EYE // SOLAR SYSTEM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <div id="scene-container"></div>
+    <div id="map-container" style="display:none;"></div>
+  </div>
+
+  <!-- Scanline Overlay -->
+  <div id="scanlines"></div>
+
+  <!-- CRT Vignette -->
+  <div id="vignette"></div>
+
+  <!-- Glitch Overlay -->
+  <div id="glitch-overlay" class="hidden"></div>
+
+  <!-- Planet Info Panel -->
+  <div id="planet-info" class="hidden">
+    <div class="panel-header">
+      <span class="panel-title" id="planet-name">PLANET</span>
+      <button id="panel-close" aria-label="Close panel">[X]</button>
+    </div>
+    <div class="panel-body" id="planet-details"></div>
+  </div>
+
+  <!-- Planet Name Label (hover) -->
+  <div id="planet-label" class="hidden"></div>
+
+  <!-- Reset View Button -->
+  <button id="reset-view">RESET VIEW</button>
+
+  <!-- Pause Indicator -->
+  <div id="pause-indicator" class="hidden">// PAUSED</div>
+
+  <!-- Back Button (for Mode 2) -->
+  <button id="back-button" class="hidden">&#8592; RETURN TO ORBIT</button>
+
+  <!-- Earth Mode HUD -->
+  <div id="earth-hud" class="hidden">
+    <!-- Corner Brackets -->
+    <div class="hud-bracket hud-bracket-tl"></div>
+    <div class="hud-bracket hud-bracket-tr"></div>
+    <div class="hud-bracket hud-bracket-bl"></div>
+    <div class="hud-bracket hud-bracket-br"></div>
+
+    <!-- Top Bar -->
+    <div class="hud-top-bar">
+      <span id="hud-gps">0.0000N 0.0000E</span>
+      <span id="hud-clock">00:00:00 UTC</span>
+      <span id="hud-zoom">ZOOM: 2 [CONTINENTAL]</span>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="hud-bottom-bar">
+      <span id="hud-systems">SISTEMAS ACTIVOS: 7</span>
+      <span class="hud-signal">
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+        <span class="signal-bar"></span>
+      </span>
+    </div>
+
+    <!-- Radar -->
+    <div class="hud-radar">
+      <canvas id="hud-radar-canvas" width="80" height="80"></canvas>
+    </div>
+
+    <!-- Matrix Rain -->
+    <div id="matrix-rain-left" class="matrix-rain matrix-rain-left"></div>
+    <div id="matrix-rain-right" class="matrix-rain matrix-rain-right"></div>
+  </div>
+
+  <!-- Earth Mode Toolbar -->
+  <div id="earth-toolbar" class="hidden">
+    <button id="toolbar-btn-sat" class="toolbar-btn" data-layer="satellites">
+      <span class="toolbar-icon">&#9675;</span>
+      <span class="toolbar-label">SAT</span>
+    </button>
+    <button id="toolbar-btn-air" class="toolbar-btn" data-layer="aircraft">
+      <span class="toolbar-icon">&#9650;</span>
+      <span class="toolbar-label">AIR</span>
+    </button>
+    <button id="toolbar-btn-storm" class="toolbar-btn" data-layer="lightning">
+      <span class="toolbar-icon">&#9889;</span>
+      <span class="toolbar-label">STORM</span>
+    </button>
+    <button id="toolbar-btn-globe" class="toolbar-btn" data-layer="earthquakes">
+      <span class="toolbar-icon">&#9793;</span>
+      <span class="toolbar-label">GLOBE</span>
+    </button>
+    <button id="toolbar-btn-flat" class="toolbar-btn" data-layer="ships">
+      <span class="toolbar-icon">&#9670;</span>
+      <span class="toolbar-label">FLAT</span>
+    </button>
+    <button id="toolbar-btn-night" class="toolbar-btn" data-layer="weather">
+      <span class="toolbar-icon">&#9790;</span>
+      <span class="toolbar-label">NIGHT</span>
+    </button>
+    <button id="toolbar-btn-heat" class="toolbar-btn" data-layer="fires">
+      <span class="toolbar-icon">&#9632;</span>
+      <span class="toolbar-label">HEAT</span>
+    </button>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

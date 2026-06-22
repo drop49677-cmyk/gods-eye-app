@@ -1,0 +1,19 @@
+{
+  "name": "gods-eye-app",
+  "version": "1.0.0",
+  "description": "Interactive 3D Solar System and Real-Time Earth Monitoring",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.170.0",
+    "gsap": "^3.12.5",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
